@@ -1,0 +1,906 @@
+
+  <style>
+    :root{
+      --blue:#0d6efd;
+      --bg:#0f1112;
+      --card-bg:#111;
+      --muted:#9fb3c0;
+    }
+    html,body{
+      height:100%;
+      margin:0;
+      font-family:"Segoe UI", Roboto, Arial, sans-serif;
+      background:var(--bg);
+      color:#fff;
+    }
+
+    /* 🔍 Stylish Search Box */
+    .search-wrap{margin:16px 0;}
+    .search {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 14px 18px;
+      border-radius: 12px;
+      background: #111;
+      border: 2px solid var(--blue);
+      color: #fff;
+      outline: none;
+      font-size: 15px;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 6px rgba(13, 110, 253, 0.4);
+    }
+    .search:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 12px rgba(13, 110, 253, 0.6);
+    }
+
+    /* 🔹 Buttons List */
+
+    .item {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      width: 100%;
+      height: 60px;
+      padding: 10px;
+      border: 2px solid var(--blue);
+      border-radius: 10px;
+      text-decoration: none;
+      box-sizing: border-box;
+      color: white;
+      background: #000;
+      font-family: sans-serif;
+      transition: transform 0.2s ease, background 0.3s ease;
+    }
+    .item:hover {
+      background: #111;
+      transform: scale(1.02);
+    }
+    .item img {
+      width: 50px;
+      height: 50px;
+      object-fit: contain;
+      margin-right:10px;
+      flex-shrink:0;
+    }
+    .title-box {
+      font-size: 16px;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    .no-results{
+      padding:18px;
+      text-align:center;
+      color:red;
+      display:none;
+    }
+    .no-results button{
+      background: linear-gradient(135deg,#000,#0d6efd);
+      color:#fff;
+      padding:12px 24px;
+      font-size:16px;
+      font-weight:bold;
+      border:none;
+      border-radius:10px;
+      cursor:pointer;
+      box-shadow:0 4px 12px rgba(13,110,253,0.5);
+      transition:0.3s;
+    }
+    .no-results button:hover{
+      transform:scale(1.05);
+    }
+
+    /* 🔹 Page padding */
+    .container {
+      padding:16px;
+      max-width:800px;
+      margin:0 auto;
+    }
+  </style>
+</head>
+<body>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background: #111;
+      color: #fff;
+    }
+
+    /* Overlay */
+    #overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      z-index: 9;
+    }
+
+    /* ✅ Drawer with fixed width */
+    #drawer {
+      position: fixed;
+      top: 0;
+      left: -220px; /* hidden to the left initially */
+      width: 220px; /* ✅ Fixed width */
+      height: 100%;
+      background: #111;
+      padding: 20px;
+      box-sizing: border-box;
+      transition: left 0.3s;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    #drawer.open {
+      left: 0;
+    }
+
+    #drawer h3 {
+      margin-top: 0;
+      color: #abc;
+    }
+
+    #drawer img.logo {
+      height: 180px;
+      width: 180px;
+      object-fit: cover;
+      display: block;
+      margin: 22px left;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      height: 50px;
+      width: 100%;
+      border: 2px solid green;
+      border-radius: 6px;
+      text-decoration: none;
+      color: green;
+      margin-top: 10px;
+      font-weight: bold;
+      padding-left: 10px;
+    }
+
+    .nav-link img.icon {
+      height: 40px;
+      width: 40px;
+    }
+
+    .foot {
+      font-size: 12px;
+      color: #777;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    /* ✅ Hamburger Button LEFT */
+    #hamburger {
+      height: 50px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start; /* ✅ Left align */
+      cursor: pointer;
+      background: #111;
+      padding-left: 10px;
+    }
+
+    #hamburger div {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 20px;
+    }
+
+    #hamburger span {
+      display: block;
+      height: 3px;
+      width: 30px;
+      background: green;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ✅ Hamburger Button (Left Corner) -->
+<div id="hamburger" onclick="toggleDrawer()">
+  <div><span></span><span></span><span></span></div>
+</div>
+
+<!-- Overlay -->
+<div id="overlay" onclick="toggleDrawer()"></div>
+
+<!-- ✅ Drawer -->
+<aside id="drawer">
+  <div>
+    <h3>ABOUT US :</h3>
+    <img class="logo" src="https://i.postimg.cc/XvXvtGL3/odified.png" alt="Logo" />
+
+    <a href="https://wa.me/923235633449" class="nav-link">
+      <img class="icon" src="https://i.postimg.cc/SNXzYPCk/icon_ui_4.png" alt="icon" />
+      WHATSAPP
+    </a>
+
+    <a href="https://youtube.com/@mr.second09?si=Drb8zJptmmR-6MKw" class="nav-link">
+      <img class="icon" src="https://i.postimg.cc/v82VBy10/icon_ui_5.png" alt="icon" />
+      YOUTUBE
+    </a>
+
+    <a href="https://t.me/PUBLICGROUP38" class="nav-link">
+      <img class="icon" src="https://i.postimg.cc/fyPtg74G/icon_ui_3.png" alt="icon" />
+      TELEGRAM
+    </a>
+  </div>
+
+  <div class="foot">v1.0 • DEVELOPER MR SECOND</div>
+</aside>
+
+<script>
+  function toggleDrawer() {
+    const drawer = document.getElementById('drawer');
+    const overlay = document.getElementById('overlay');
+    drawer.classList.toggle('open');
+    overlay.style.display = drawer.classList.contains('open') ? 'block' : 'none';
+  }
+</script>
+
+</body>
+</html>
+  <main class="container">
+    <!-- 🔍 Search -->
+    <div class="search-wrap">
+      <input id="search" class="search" placeholder="Type to search...">
+    </div>
+
+    <!-- 🔹 All Buttons inside ONE scrollable list -->
+    <div id="list" class="list">
+<!-- 🔹 Single Scrollable Container -->
+
+<div id="list" class="list" style="max-height:600px; overflow-y:auto; display:flex; flex-direction:column; gap:12px;">
+  
+
+  <!-- Button 1 -->
+  <a href="https://drive.google.com/file/d/11zHJoGfnraXKP5PDvUZYwj5DDVfqpBoH/view?usp=drivesdk" target="_blank" class="item">
+    <img src="https://i.postimg.cc/9f9pPM9X/ebgpreview.png" alt="ICON">
+    <div class="title-box">GHOST RAT</div>
+  </a>
+
+  <!-- Button 2 -->
+  <a href="https://drive.google.com/file/d/11zHJoGfnraXKP5PDvUZYwj5DDVfqpBoH/view?usp=drivesdk" target="_blank" class="item">
+    <img src="https://i.postimg.cc/FKf9TtFH/preview.png" alt="ICON">
+    <div class="title-box">SMS HACK</div>
+  </a>
+
+  <!-- Button 3 -->
+  <a href="https://drive.google.com/file/d/11jFr1QI973iOG_-_NNX1TSirGcv4mzRY/view?usp=drivesdk" target="_blank" class="item">
+    <img src="https://i.postimg.cc/FKGKBb3T/jjcfnm.png" alt="ICON">
+    <div class="title-box">TURMAX TOOLS</div>
+  </a>
+
+  <!-- Button 4 -->
+  <a href="https://drive.google.com/file/d/12_BYEKmGHAVsuSV3UiuR-58lf8EaIELY/view?usp=drivesdk" target="_blank" class="item">
+    <img src="https://i.postimg.cc/Kc5yrc75/solom.png" alt="ICON">
+    <div class="title-box">SLMAN TOOLKIT</div>
+  </a>
+
+  <!-- Button 5 -->
+  <a href="https://drive.google.com/file/d/12Sz5aucEJgPnT8HLr2uZ-qyP020wzpmL/view?usp=drivesdk" target="_blank" class="item">
+    <img src="https://i.postimg.cc/SNXzYPCk/icon_ui_4.png" alt="ICON">
+    <div class="title-box">WHATSAPP HACK</div>
+  </a>
+
+  <!-- Button 6 -->
+  <a href="https://drive.google.com/file/d/11tMCej7hc8NGML19FgaW05e0TyIAZbxD/view?usp=drivesdk" target="_blank" class="item">
+    <img src="https://i.postimg.cc/L5P22jgK/app-iconm.png" alt="ICON">
+    <div class="title-box">SPY X RAT</div>
+  </a>
+
+  <!-- Button 7 -->
+  <a href="https://drive.google.com/file/d/11ar-jAhsmJUEa2Jmf988hBOO4w3R0iIF/view?usp=drivesdk" target="_blank" class="item">
+    <img src="https://i.postimg.cc/VLLP7yDP/spider.png" alt="ICON">
+    <div class="title-box">SPIDER RAT</div>
+  </a>
+
+  <!-- Button 8 -->
+  <a href="https://drive.google.com/file/d/1-R67tynlsBELCDFJ4Fs5dLbu4LrRGa0S/view?usp=drivesdk" target="_blank" class="item">
+    <img src="https://i.postimg.cc/rpYDpCsK/logowifi.png" alt="ICON">
+    <div class="title-box">WIFI HACK</div>
+  </a>
+
+  <!-- Button 9 -->
+  <a href="https://drive.google.com/file/d/12CMfuVhIaokIESNpptMs6EX0EhxnxmPu/view?usp=drivesdk" target="_blank" class="item">
+    <img src="https://i.postimg.cc/rm8rdFCP/ico.png" alt="ICON">
+    <div class="title-box">SECRET RAT</div>
+  </a>
+
+  <!-- Button 10 -->
+  <a href="https://drive.google.com/file/d/11c4XB9LqvUb70mqtksbz7oOH5gcbfK1U/view?usp=drivesdk" target="_blank" class="item">
+    <img src="https://i.postimg.cc/pTNs38vn/dmmdm.png" alt="ICON">
+    <div class="title-box">TURMUX HEAVY HACK</div>
+  </a>
+  
+  <a href="https://drive.google.com/file/d/1-w4D2o9oeBjSmahjeAusc-yAgI6QgTNh/view?usp=drivesdk" target="_blank" class="item">
+    <img src="https://i.postimg.cc/8PBg4phH/bone-1-67.png" alt="ICON">
+    <div class="title-box">VIRUS MAKER</div>
+  </a>
+
+  <a href="https://mega.nz/folder/WvIlFCLQ#KHWbWS4Ez57R3jCdpYdREw" target="_blank" class="item">
+    <img src="https://i.postimg.cc/25nQbtpV/gacker.png" alt="ICON">
+    <div class="title-box">A TO Z ETHICAL HACKING</div>
+  </a>
+
+  <a href="https://drive.google.com/drive/folders/1FUhjQqgUlhnL48E5hCjhwjKsEn3XMT2T" target="_blank" class="item">
+    <img src="https://i.postimg.cc/SNt3Dnnc/x3dcc1d3bb.png" alt="ICON">
+    <div class="title-box">YT SHORTS VIRAL</div>
+  </a>
+
+  <a href="https://drive.google.com/drive/folders/1tW47PkqEeioNde3pup8FhDJssCK3meiv" target="_blank" class="item">
+    <img src="https://i.postimg.cc/Zn3B0h8D/10298.jpg" alt="ICON">
+    <div class="title-box">YT LONG VIRAL</div>
+  </a>
+
+  <a href="https://www.mediafire.com/file/np7xp5d0nrnpf19/base.apk/file" target="_blank" class="item">
+    <img src="https://i.postimg.cc/5y598w45/p20250716_104651.png" alt="ICON">
+    <div class="title-box">TIKTOK LIVE</div>
+  </a>
+
+  <a href="https://drive.google.com/file/d/1XUfR8LP8MPkBp5Kr1dOaHMpIKnryzEat/view?usp=drivesdk" target="_blank" class="item">
+    <img src="https://i.postimg.cc/9Ftz9jz3/msmsmm.png" alt="ICON">
+    <div class="title-box">TIKTOK FORYOU</div>
+  </a>
+
+  <a href="https://drive.google.com/file/d/11_C2bR_oOJCdImcZlk8OXJgn5QJpIgMc/view?usp=drivesdk" target="_blank" class="item">
+    <img src="https://i.postimg.cc/X7009Gyq/bone-1-6.png" alt="ICON">
+    <div class="title-box">DOGE RAT</div>
+  </a>
+
+  <a href="https://drive.google.com/folderview?id=1tgkKt4lSpXD3GnMQRgUb4bbtlmpP9XOE" target="_blank" class="item">
+    <img src="https://i.postimg.cc/59swCvrq/hbm.png" alt="ICON">
+    <div class="title-box">WIFI HACKING COURSE</div>
+  </a>
+
+  <a href="https://mega.nz/folder/4hkWxYzJ#46BhONa5ulbxJEWHp-9vpg" target="_blank" class="item">
+    <img src="https://i.postimg.cc/0j7RLxh9/bone-1-2.png" alt="ICON">
+    <div class="title-box">BLACK HAT COURSE</div>
+  </a>
+
+  <a href="https://drive.google.com/file/d/126dHUM2NCNF5mDPusiLE0IwyLbrBu-J-/view?usp=drivesdk" target="_blank" class="item">
+    <img src="https://i.postimg.cc/L52N8pn9/dmsmmz.png" alt="ICON">
+    <div class="title-box">PHYSICS WALA MOD</div>
+  </a>
+<a href="https://drive.google.com/file/d/1-uw1pBr358bE9JGj9GS_s6bKzOsBLFAv/view?usp=drivesdk" target="_blank" class="item">
+  <img src="https://i.postimg.cc/RhBbJtbz/d96f6ad175a83982c8069c45fedc4a61.png" alt="ICON">
+  <div class="title-box">AI VIDEO AND EARN</div>
+</a>
+
+<a href="https://www.mediafire.com/file/d11g1tokj0zi3pg/How_To_Make_Professional_Ai_Voice_Like_Human_-_Full_Course.mp4/file" target="_blank" class="item">
+  <img src="https://i.postimg.cc/ht1xKdVd/kzjzk.png" alt="ICON">
+  <div class="title-box">AI PRO HUMAN VOICE</div>
+</a>
+
+<a href="https://www.mediafire.com/file/watf6hh6jhgx995/GMAIL_WITHOUT_PHONE_NUMBERS_.zip/file" target="_blank" class="item">
+  <img src="https://i.postimg.cc/gkBqfRqk/gmailpng.png" alt="ICON">
+  <div class="title-box">UNLIMITED GMAIL</div>
+</a>
+
+<a href="https://www.mediafire.com/file/numvfv1ku9qod7f/You_can_get_your_Mobile_PTA_Approved_by_Yourself_Trick_from_SMT_TEAM%25E2%259C%2593_.mp4/file" target="_blank" class="item">
+  <img src="https://i.postimg.cc/25PCJH3F/ptq0.png" alt="ICON">
+  <div class="title-box">PTA APPROVED PHONE</div>
+</a>
+
+<a href="https://www.mediafire.com/file/9jgmo5ivcuykkqy/AimKing-Main02_3.1.5.apk/file" target="_blank" class="item">
+  <img src="https://i.postimg.cc/rpYk4fS2/ballpool.png" alt="ICON">
+  <div class="title-box">8 BALL POLL AUTOPLAY</div>
+</a>
+
+<a href="https://www.mediafire.com/file/w9fmgb8pydzfuvq/YouTube_Views_Tool_1.0.apk/file" target="_blank" class="item">
+  <img src="https://i.postimg.cc/QtkJPySR/emovebgreview.png" alt="ICON">
+  <div class="title-box">YT UNLIMITED VIEWS</div>
+</a>
+
+<a href="https://drive.usercontent.google.com/download?id=1LSa4C1KuHeUKlwnLVqmhF7pPjiEGcmpq&export=download&authuser=0" target="_blank" class="item">
+  <img src="https://i.postimg.cc/TYmgHSwQ/jjk.png" alt="ICON">
+  <div class="title-box">WHATSAPP SPY</div>
+</a>
+
+<a href="https://www.mediafire.com/file/y78pzecdr5bmj7y/Pubg_Hack_Making_Course.rar/file" target="_blank" class="item">
+  <img src="https://i.postimg.cc/bry9j9Bd/eview.png" alt="ICON">
+  <div class="title-box">MAKE OWN PUBG HACK</div>
+</a>
+
+<a href="https://www.mediafire.com/file/f8pjvzqi1sv0kx9/Facebook_Paid_Method_%25F0%259D%2597%2599%25F0%259D%2597%25BF%25F0%259D%2597%25B2%25F0%259D%2597%25B2.docx/file" target="_blank" class="item">
+  <img src="https://i.postimg.cc/fR9XpPRB/hcm.png" alt="ICON">
+  <div class="title-box">FB PAID WATCHTIME FREE</div>
+</a>
+
+<a href="https://www.mediafire.com/file/osd0cekmnrfsssi/How_to_make_tiktok_uk_usa_japan_account.mp4/file" target="_blank" class="item">
+  <img src="https://i.postimg.cc/qqpHVWrn/snnd43png.png" alt="ICON">
+  <div class="title-box">MAKE UK TIKTOK ID</div>
+</a>
+
+<a href="https://www.mediafire.com/file/g1vr6955y2ve4g6/WiFi-Hacker_%25284%2529.apk/file" target="_blank" class="item">
+  <img src="https://i.postimg.cc/8PBg4phH/bone-1-67.png" alt="ICON">
+  <div class="title-box">PHONE RESET APP</div>
+</a>
+
+<a href="https://www.mediafire.com/file/in413nyxxyhq1ob/car_collication.apk/file" target="_blank" class="item">
+  <img src="https://i.postimg.cc/4dDn6fzG/mal.png" alt="ICON">
+  <div class="title-box">PHONE DEAD VIRUS</div>
+</a>
+
+<a href="https://drive.usercontent.google.com/download?id=1YxNl24vA4Wyx_44Y4HfSpKCCMoVcwXDM&export=download&authuser=0&confirm=t&uuid=4d4f8772-6586-4cbe-9874-e9328ba15dd1&at=AN8xHorjYhIG2w7bg8mabsPvJ7gv%3A1751854246609" target="_blank" class="item">
+  <img src="https://i.postimg.cc/3JP0XZFp/icon_ui_6.png" alt="ICON">
+  <div class="title-box">FACEBOOK HACK</div>
+</a>
+
+<a href="https://www.mediafire.com/file/xsy20pc3ynwamqv/Facebook_Ban_Meth_By_AbheeBhai.zip/file" target="_blank" class="item">
+  <img src="https://i.postimg.cc/85D0jWYg/xmmx.png" alt="ICON">
+  <div class="title-box">FACEBOOK ID BAN</div>
+</a>
+
+<a href="https://drive.usercontent.google.com/download?id=1gAvpW9TQLPD4k4I4jNwuR6vvyumDVr97&export=download&authuser=0&confirm=t&uuid=51a1eb85-ee63-49d7-9115-8192ab776a3c&at=AN8xHoraaVSlCXmobD_JLk7tfV86%3A1751852838376" target="_blank" class="item">
+  <img src="https://i.postimg.cc/qqpHVWrn/snnd43png.png" alt="ICON">
+  <div class="title-box">EARN WITH TIKTOK</div>
+</a>
+
+<a href="https://www.mediafire.com/file/0sujq0ysaltwq5n/InShot_20250529_224740352.mp4/file" target="_blank" class="item">
+  <img src="https://i.postimg.cc/xTvN2nTX/4712126.png" alt="ICON">
+  <div class="title-box">CRATE TELEGRAM BOT</div>
+</a>
+
+  <a href="https://www.mediafire.com/file/iondgjxswk9ac3t/%25F0%259F%258E%2583Trust_Wallet_Unlimited_Money_%25F0%259F%2598%2580_And_Unlimited_Account%2527s_Hack%25F0%259F%258E%2583_%25281%2529.zip/file" target="_blank" class="item">
+    <img src="https://i.postimg.cc/656Mstkz/dndnnd.png" alt="ICON">
+    <div class="title-box">TRUST WALLET HACK</div>
+  </a>
+
+  <a href="https://www.mediafire.com/file/tip7yxhgp56zo2p/MOBILE_LOCK_APK.zip/file" target="_blank" class="item">
+    <img src="https://i.postimg.cc/zvhb6bJ3/lock.png" alt="ICON">
+    <div class="title-box">MOBILE LOCK VIRUS</div>
+  </a>
+
+  <a href="https://www.mediafire.com/file/lo1dk4j50yrvw6w/easypaisa-2-9-66.xapk/file" target="_blank" class="item">
+    <img src="https://i.postimg.cc/yN3ffjMH/dmdm.png" alt="ICON">
+    <div class="title-box">EASYPASA BIOMATRIC BYPASS</div>
+  </a>
+
+  <a href="https://drive.usercontent.google.com/download?id=1UXIauIgH_rrYMJIcdo1igOTZvioFhNCL&export=download&authuser=0&confirm=t&uuid=94bef44b-69a1-4807-b4d7-7a46bcad5880&at=AN8xHooVsOq4-9y7E62yzGtNQURB%3A1751851898596" target="_blank" class="item">
+    <img src="https://i.postimg.cc/zvk5y870/review.png" alt="ICON">
+    <div class="title-box">FULL MOBILE HACK</div>
+  </a>
+
+  <a href="https://mega.nz/file/uq4UCZhS#iuVDyhBVOwBA9VISiYq5hqdrRDQ77Hvi2HnzgqIC7P8" target="_blank" class="item">
+    <img src="https://i.postimg.cc/dV51Wm84/ngkk.png" alt="ICON">
+    <div class="title-box">15000+ REELS BUNDLE</div>
+  </a>
+
+  <a href="https://drive.google.com/drive/folders/1JeUB7ynlIp0b0blN4MD-4mUUaVeB3JH6?usp=sharing" target="_blank" class="item">
+    <img src="https://i.postimg.cc/4xLM2mnz/copy.png" alt="ICON">
+    <div class="title-box">YT COPYRIGHT BYPASS</div>
+  </a>
+
+  <a href="https://www.mediafire.com/file/o5rizhz8js3vdyj/JazzCash_9.0.99.apk/file" target="_blank" class="item">
+    <img src="https://i.postimg.cc/zDQyNkMM/images.png" alt="ICON">
+    <div class="title-box">JAZZ BIOMATRIC BYPASS</div>
+  </a>
+
+  <a href="https://www.mediafire.com/file/g3xy3sfihiw2t3e/com.lemon.lvoverseas_14.5.0.apk/file" target="_blank" class="item">
+    <img src="https://i.postimg.cc/SN8xhbc2/aaa8a51db20f24d3d31be53b19c9cf18.png" alt="ICON">
+    <div class="title-box">CAPCUT PRO</div>
+  </a>
+
+  <a href="https://www.mediafire.com/file/cxe4m6huwvszm7l/WHATSAPP_NUMBER_HIDE_NEW_TRICK_2025_BY_PROXARMY.zip/file" target="_blank" class="item">
+    <img src="https://i.postimg.cc/TYmgHSwQ/jjk.png" alt="ICON">
+    <div class="title-box">HIDE NUMBER ON WHATSAPP</div>
+  </a>
+
+  <a href="https://drive.usercontent.google.com/download?id=1zjoZNVedu9-rkUNCIvgAfZnlepS4HtA9&export=download&confirm=t&uuid=ef307ddc-f8f0-4208-82af-932772db55f3" target="_blank" class="item">
+    <img src="https://i.postimg.cc/4yRNK8gN/otp.png" alt="ICON">
+    <div class="title-box">+44 FREE WP NUMBER</div>
+  </a>
+
+  <a href="https://www.mediafire.com/file/axhccqgfyk4ft81/NEW_MOBILE_HACK_TOOL%252BVIDEO.zip/file" target="_blank" class="item">
+    <img src="https://i.postimg.cc/0yPP1M8F/b3f6bfb5f89cb21c8ab00c9e1747814f.png" alt="ICON">
+    <div class="title-box">FULL ANDROID ACCESS</div>
+  </a>
+
+
+  <a href="https://www.mediafire.com/folder/xe91rzlufr0da/JazzCash_Mod_2024" target="_blank" class="item">
+    <img src="https://i.postimg.cc/90QgB2Vx/xmxng.png" alt="ICON">
+    <div class="title-box">JAZZ CASH SCAM APK</div>
+  </a>
+
+  <a href="https://drive.google.com/drive/folders/1GkLsNz0opk398eGL4_op_SXq57_Ubz6_?usp=sharing" target="_blank" class="item">
+    <img src="https://i.postimg.cc/6qbnxJZ1/growmore.png" alt="ICON">
+    <div class="title-box">THUMBNAIL MATERIAL</div>
+  </a>
+
+  <a href="https://drive.google.com/file/d/1298ocyzaxOcrUE1m7tkNnfnDwuj4gQEG/view?usp=drivesdk" target="_blank" class="item">
+    <img src="https://i.postimg.cc/YS74VqVC/icon.png" alt="ICON">
+    <div class="title-box">MT MANAGER VIP</div>
+  </a>
+
+  <a href="https://docs.google.com/spreadsheets/d/1XtJ-TMfCDutWzTSHusgaz16UM30AGMuAjwj6SI8dFy0/edit?usp=drivesdk" target="_blank" class="item">
+    <img src="https://i.postimg.cc/bYStsMQ8/logo_5.png" alt="ICON">
+    <div class="title-box">500+ PAID COURSES</div>
+  </a>
+
+  <a href="https://officialzerox.blogspot.com/2025/07/gta-san-andreas-mod-apk.html?m=1" target="_blank" class="item">
+    <img src="https://i.postimg.cc/xCRLgb1Q/gta.png" alt="ICON">
+    <div class="title-box">GTA SANDRAS MOD</div>
+  </a>
+
+  <a href="https://drive.google.com/file/d/11wGWYz0eWSNCToCWvafKQsk7US1NUvx4/view?usp=drivesdk" target="_blank" class="item">
+    <img src="https://i.postimg.cc/kgJGFht2/mxmdm.png" alt="ICON">
+    <div class="title-box">LIVE SCREEN HACK</div>
+  </a>
+
+  <a href="https://www.mediafire.com/file/okyc3omvbv88654/MobileHackByExZ.7z/file" target="_blank" class="item">
+    <img src="https://i.postimg.cc/qqq6LbFc/hck.png" alt="ICON">
+    <div class="title-box">PHONE HACK</div>
+  </a>
+
+  <a href="https://www.mediafire.com/file/bcmddy9r7onqutd/N3tfl%2521x_premium_by_%2540zerox.apk/file" target="_blank" class="item">
+    <img src="https://i.postimg.cc/50MmsV5B/fmmdmc.png" alt="ICON">
+    <div class="title-box">NETFLIX HACK</div>
+  </a>
+
+  <a href="https://drive.google.com/drive/folders/1f5OGLWLGeW5LA9fWZCnWT503muSrknFU" target="_blank" class="item">
+    <img src="https://i.postimg.cc/DwMjdHY6/dmdmd.png" alt="ICON">
+    <div class="title-box">MOBILE REPAIRING COURSE</div>
+  </a>
+
+  <a href="https://youtu.be/DM5uiBuAVaw?si=K3Z3BkPe2pMkX6ux" target="_blank" class="item">
+    <img src="https://i.postimg.cc/C1N6D5yB/xmmxm.png" alt="ICON">
+    <div class="title-box">MAKE SIM DETAILS WEBSITE</div>
+  </a>
+
+  <a href="https://zerox-courses.blogspot.com/2025/07/vip-editing-pack-by-zerox-import.html" target="_blank" class="item">
+    <img src="https://i.postimg.cc/Bv2zSNMC/xkkxkx.png" alt="ICON">
+    <div class="title-box">100GB EDITING PACK</div>
+  </a>
+
+  <a href="https://www.mediafire.com/file/6rdvfzzav3yml8h/COPYRIGHT_BYPASS_BY_SIGMA_TECH.7z/file" target="_blank" class="item">
+    <img src="https://i.postimg.cc/Zn3B0h8D/10298.jpg" alt="ICON">
+    <div class="title-box">YT COPYRIGHT MATHOD</div>
+  </a>
+
+  <a href="https://www.mediafire.com/file/k0ugrztyqh5z42k/PHONE+CRASH+PROOF+BY+SIGMA+TECH.mp4.7z/file" target="_blank" class="item">
+    <img src="https://i.postimg.cc/hjbNrMmG/visj.png" alt="ICON">
+    <div class="title-box">PHONE CRASH WITH LINK</div>
+  </a>
+
+  <a href="https://www.mediafire.com/file/17zvctl0hlgf9qw/HOW_TO_BUILD_APK_BY_SIGMA_TECH.mp4/file" target="_blank" class="item">
+    <img src="https://i.postimg.cc/wj7FvFTm/dnndm.png" alt="ICON">
+    <div class="title-box">APP DEVELOPMENT</div>
+  </a>
+
+  <a href="https://www.mediafire.com/file/szh36ahft3qyd69/Root_Any_Phone_by_SIGMA_TECH_.7z/file" target="_blank" class="item">
+    <img src="https://i.postimg.cc/8kmZnj0j/dnjdj.png" alt="ICON">
+    <div class="title-box">ROOT ANY ANDROID</div>
+  </a>
+
+  <a href="https://www.mediafire.com/file/rgfxe7ls7d170h5/CREATE_OWN_CHAT_BOT_WEBSITE.zip/file" target="_blank" class="item">
+    <img src="https://i.postimg.cc/fWCvf1Vd/fndnnf.png" alt="ICON">
+    <div class="title-box">MAKE CHAT GPT BOT</div>
+  </a>
+
+  <a href="https://www.mediafire.com/file/qjm6oi4qqgjaykz/MAKE+ANY+MODE+APK+BY+SIGMA+TECH.7z/file" target="_blank" class="item">
+    <img src="https://i.postimg.cc/y6mG4fk6/djdjkd.png" alt="ICON">
+    <div class="title-box">MOD ANY APP</div>
+  </a>
+  <a href="https://www.mediafire.com/file/eoutaey9wilbb9c/UNFREEZE_YT_BY_SIGMA_TECH.mp4/file" target="_blank" class="item">
+  <img src="https://i.postimg.cc/hjjGWJ0c/jdjd.png" alt="ICON">
+  <div class="title-box">YT CHANNEL UNFREEZE</div>
+</a>
+
+<a href="https://sim-details-eight.vercel.app" target="_blank" class="item">
+  <img src="https://i.postimg.cc/m2T5bQHY/djjdkdk.png" alt="ICON">
+  <div class="title-box">SIM DETAILS WEB</div>
+</a>
+
+<a href="https://www.mediafire.com/file/pf7bbx214chbdno/UNABN_METHOD_BY_MR_ALONE.zip/file" target="_blank" class="item">
+  <img src="https://i.postimg.cc/nzjtGqkj/banam.png" alt="ICON">
+  <div class="title-box">UNBAN WHATSAPP</div>
+</a>
+
+<a href="https://drive.google.com/drive/folders/1VGP25yS5o4uchMazGWWzDRcuGtrmnhSM" target="_blank" class="item">
+  <img src="https://i.postimg.cc/0Nz4TPJh/d7018e82a8814289e0ef7caa00b4b0e4.png" alt="ICON">
+  <div class="title-box">PREMIUM APPS</div>
+</a>
+
+<a href="https://www.mediafire.com/file/mznusuvzkmzy11p/GIRL_VICE_CHANGER_METHOD.zip/file" target="_blank" class="item">
+  <img src="https://i.postimg.cc/VvqpKgb6/cfmf.png" alt="ICON">
+  <div class="title-box">GIRL VOICE CHANGER</div>
+</a>
+
+<a href="https://drive.google.com/drive/folders/1-49JZD6wY2qG929fJo-aS47WsaPtvdFh?usp=sharing" target="_blank" class="item">
+  <img src="https://i.postimg.cc/D065WMXq/dmdmmd.png" alt="ICON">
+  <div class="title-box">BIGGEST BUNDLE</div>
+</a>
+
+<a href="https://du1.devuploads.com/d/3ajv3odz5mo5kx666wguip6ij4n6x4pudoghwopn37gjsmgxuygis6agr2sn5m6x7fa4w4gd/Np_Manager_VIP_Clown_Tricks.apk" target="_blank" class="item">
+  <img src="https://i.postimg.cc/QdmB2rrg/logo_7.png" alt="ICON">
+  <div class="title-box">NP MANAGER PRO</div>
+</a>
+
+<a href="https://docs.google.com/document/d/18ZX68WZWu12NTNmQtZeyCyc1hyBYQzRn5rBQURoEHz4/edit?usp=drivesdk" target="_blank" class="item">
+  <img src="https://i.postimg.cc/KcT2KrjC/bone-1-4.png" alt="ICON">
+  <div class="title-box">POWER FULL HACK</div>
+</a>
+
+<a href="https://drive.usercontent.google.com/download?id=1Uu1snz4ylTFC7jv0FzQ8M199epvI7pHa&export=download&authuser=0" target="_blank" class="item">
+  <img src="." alt="ICON">
+  <div class="title-box">CAMERA HACK</div>
+</a>
+
+<a href="https://www.mediafire.com/file/e2t1tgi8nul77ki/VID-20250705-WA0008.mp4/file" target="_blank" class="item">
+  <img src="https://i.postimg.cc/9Qm5N6bj/bot.png" alt="ICON">
+  <div class="title-box">BAN WHATSAPP</div>
+</a>
+
+<a href="https://www.mediafire.com/file/uqls9a26bdvvbuz/Digital_Products_Bundle.pdf/file" target="_blank" class="item">
+  <img src="https://i.postimg.cc/prvRVpfm/psmns.png" alt="ICON">
+  <div class="title-box">2000+ DIGITAL BUNDLE</div>
+</a>
+
+<a href="https://www.mediafire.com/file/6yjl2a6abl5x4bz/BlueTickOnFaceBookBioMethodByJadoon.zip/file" target="_blank" class="item">
+  <img src="https://i.postimg.cc/fR9XpPRB/hcm.png" alt="ICON">
+  <div class="title-box">FB BLUE TICK FREE</div>
+</a>
+
+<a href="https://drive.google.com/drive/folders/1f_AunP5z2Gcrw5c_hquC6ZKU2B1Q1sWi?usp=sharing" target="_blank" class="item">
+  <img src="https://i.postimg.cc/wMF86Fxr/skskkx.png" alt="ICON">
+  <div class="title-box">AI MONKEY VLOG</div>
+</a>
+
+<a href="https://drive.google.com/drive/folders/1Q9ONxZhn8e675LcdItEV2RUxjo71DWUz?usp=sharing" target="_blank" class="item">
+  <img src="https://i.postimg.cc/sfmtG6y6/vlod.png" alt="ICON">
+  <div class="title-box">AI BIG FOOT VLOG</div>
+</a>
+
+<a href="https://drive.google.com/drive/folders/1fV-qM_J7VgvWPGmTjk8o89L6-JpV2lXH?usp=sharing" target="_blank" class="item">
+  <img src="https://i.postimg.cc/BZFjqF0n/movebgreview.png" alt="ICON">
+  <div class="title-box">CARDING COURSE VIP</div>
+</a>
+
+<a href="https://mega.nz/folder/fws0RLiR#T72PtzIzHF3ZBUMCU3zX0Q/folder/SxlW3ATb" target="_blank" class="item">
+  <img src="https://i.postimg.cc/HWFbzHpV/jzjzks.png" alt="ICON">
+  <div class="title-box">CARDING COURSE AND TOOLS</div>
+</a>
+
+<a href="https://drive.google.com/drive/folders/1ZKJCZqRuxWK5_5SG6OcazxYswvnOBCSh" target="_blank" class="item">
+  <img src="https://i.postimg.cc/HnDF0RnR/cjjdkdk.png" alt="ICON">
+  <div class="title-box">FIVER PAID COURSE URDU</div>
+</a>
+
+<a href="https://drive.google.com/drive/folders/1LbnEWjSwb7GSetHgwxPt1b2TTS96RAh8?usp=sharing" target="_blank" class="item">
+  <img src="https://i.postimg.cc/T3tM8tN5/byh.png" alt="ICON">
+  <div class="title-box">18 DAYS YT FORMULA</div>
+</a>
+<a href="https://drive.google.com/drive/folders/1nN8qLA3eRCn9pWCMmxHxrVTKFIYoJqr2" target="_blank" class="item">
+  <img src="https://i.postimg.cc/TPh8TnB7/c6cb46e898757fd90857826455e3785f.png" alt="ICON">
+  <div class="title-box">20 GB EDITTING ASSETS</div>
+</a>
+
+<a href="https://drive.google.com/drive/folders/1qZ55A3-ZtUN8iaY8hmb1qxa4KvMKXqKq?usp=sharing" target="_blank" class="item">
+  <img src="https://i.postimg.cc/wj7FvFTm/dnndm.png" alt="ICON">
+  <div class="title-box">MOBILE VIDEO EDITING</div>
+</a>
+
+<a href="https://www.mediafire.com/file/gna1ub9930w24mu/2999%252B_Font_Pixellab.7z/file" target="_blank" class="item">
+  <img src="https://i.postimg.cc/d3Zt3zXf/jsmsjs.png" alt="ICON">
+  <div class="title-box">3K VIP FONTS</div>
+</a>
+
+<a href="https://www.mediafire.com/file/qjm6oi4qqgjaykz/MAKE+ANY+MODE+APK+BY+SIGMA+TECH.7z/file" target="_blank" class="item">
+  <img src="https://i.postimg.cc/7bvP2KrZ/jsks.png" alt="ICON">
+  <div class="title-box">GAME MODING COURSE</div>
+</a>
+
+<a href="https://drive.google.com/file/d/12mYEu0hDl6zpKP_VrX5E9-QxHHG45pRC/view?usp=drivesdk" target="_blank" class="item">
+  <img src="https://i.postimg.cc/cHRGz0p0/smali.png" alt="ICON">
+  <div class="title-box">SMALI HELPER</div>
+</a>
+
+<a href="https://drive.google.com/file/d/12ohFUYpqZ286RFOt3K5Jrg4yfkFXOnLx/view?usp=drivesdk" target="_blank" class="item">
+  <img src="https://i.postimg.cc/nhBj0Q3W/iconm.png" alt="ICON">
+  <div class="title-box">MODIFICATION TOOLS</div>
+</a>
+
+<a href="https://mega.nz/folder/bwg3lbLC#izIYodWWIZ7hb4nPFMYbZQ" target="_blank" class="item">
+  <img src="https://i.postimg.cc/cJzpCrSs/byemd.png" alt="ICON">
+  <div class="title-box">CYBER SECURITY URDU COURSE</div>
+</a>
+
+<a href="https://mega.nz/folder/FV5TFArD#yZYUV6vMv8iPmWXpq2mpyw" target="_blank" class="item">
+  <img src="https://i.postimg.cc/R0T3zx5Q/iconanono.png" alt="ICON">
+  <div class="title-box">HACKING EBOOKS</div>
+</a>
+
+<a href="https://dupload.net/hfmd6xdouq7q" target="_blank" class="item">
+  <img src="https://i.postimg.cc/3xN7wMvF/robo.png" alt="ICON">
+  <div class="title-box">CHAT GPT PRO</div>
+</a>
+
+<a href="https://www.mediafire.com/file/dnqr9prhj3aoiiv/Clone_App_Pro_3.6.2.apk/file" target="_blank" class="item">
+  <img src="https://i.postimg.cc/4NCht55c/logo_4.png" alt="ICON">
+  <div class="title-box">APP CLONER PRO</div>
+</a>
+
+<a href="https://drive.google.com/drive/folders/175o5vQnNX_kSqasd2-0lvkY4GufhfXdN" target="_blank" class="item">
+  <img src="https://i.postimg.cc/QxWHdTZM/ins.png" alt="ICON">
+  <div class="title-box">INSTAGRAM HACK</div>
+</a>
+
+<a href="https://drive.google.com/drive/folders/1iu1zhb0Htpjr4cINxTI10IRTz5YeiorF" target="_blank" class="item">
+  <img src="https://i.postimg.cc/zXjXBSP8/pnhf.png" alt="ICON">
+  <div class="title-box">AVIATOR HACK</div>
+</a>
+
+<a href="https://drive.google.com/drive/folders/1NsQ0S1ZRLoj8MN6SoWBkunf7m7oiDdim" target="_blank" class="item">
+  <img src="https://i.postimg.cc/vHj25CKz/xndjxx.png" alt="ICON">
+  <div class="title-box">YT CHANNEL BAN</div>
+</a>
+
+<a href="https://drive.google.com/file/d/1GZ4fk2qfRu2MG9irJKyq0zs1HnEbZhtZ/view?usp=drivesdk" target="_blank" class="item">
+  <img src="https://i.postimg.cc/9fX90QBN/laksk.png" alt="ICON">
+  <div class="title-box">1 MILLION REELS</div>
+</a>
+
+<a href="https://drive.google.com/drive/folders/16XMbcojEEO5FweJHtUjUEy2GkyvPCKmE" target="_blank" class="item">
+  <img src="https://i.postimg.cc/GhRZHWZs/cloners.png" alt="ICON">
+  <div class="title-box">FUNY AI REPORT VIDEOS</div>
+</a>
+
+<a href="https://drive.google.com/drive/folders/1QMV7WOVk8o7iZODRtcepQHhpCEyzJHFd?usp=sharing" target="_blank" class="item">
+  <img src="https://i.postimg.cc/TwMXQpHt/sim.png" alt="ICON">
+  <div class="title-box">FREE VIRTUAL NUMBER</div>
+</a>
+
+<a href="https://www.mediafire.com/file/du9tybq34i3pbgp/.7z/file" target="_blank" class="item">
+  <img src="https://i.postimg.cc/NFjmnfKH/havk.png" alt="ICON">
+  <div class="title-box">ANDROID HACK</div>
+</a>
+
+<a href="https://www.mediafire.com/file/qboi47d4mra2pgw/FREEFIRE_DAIMONDS.apk/file" target="_blank" class="item">
+  <img src="https://i.postimg.cc/90LtXw6b/free.png" alt="ICON">
+  <div class="title-box">FREE FIRE DIAMOND FREE</div>
+</a>
+
+<a href="https://www.mediafire.com/file/ojdroxl2vbdf95p/R3_tool.zip/file" target="_blank" class="item">
+  <img src="https://i.postimg.cc/Njcmh42t/ksksk.png" alt="ICON">
+  <div class="title-box">R3 TOOLS PRO</div>
+</a>
+
+<a href="https://drive.google.com/drive/folders/1zow_alChohVCgiYSn-kJGYKdEb94ZyNb" target="_blank" class="item">
+  <img src="https://i.postimg.cc/13rR80Cy/adsen.png" alt="ICON">
+  <div class="title-box">AD SENSE TRAFFIC</div>
+</a>
+
+<a href="https://drive.google.com/drive/folders/1tD3e8UUBNw4BZZ3Su70bcf7t5av0Xdwl?usp=sharing" target="_blank" class="item">
+  <img src="https://i.postimg.cc/DzbTqq5W/shpoyfu.png" alt="ICON">
+  <div class="title-box">250+ SHOPIFY THEMES</div>
+</a>
+
+<a href="https://drive.google.com/drive/folders/1JRQ9u7TXDX-8xTicwWv3MOoXVmYeq8sC" target="_blank" class="item">
+  <img src="https://i.postimg.cc/GhRZHWZs/cloners.png" alt="ICON">
+  <div class="title-box">MOTIVATIONAL REELS</div>
+</a>
+
+<a href="https://carrd.co/" target="_blank" class="item">
+  <img src="https://i.postimg.cc/wj7FvFTm/dnndm.png" alt="ICON">
+  <div class="title-box">MAKE FREE WEBSITE</div>
+</a>
+
+<a href="https://t.me/Mobile_hacking_SG_bot" target="_blank" class="item">
+  <img src="https://i.postimg.cc/kGLGynK9/iew.png" alt="ICON">
+  <div class="title-box">CAMERA HACK BOT</div>
+</a>
+
+<a href="https://drive.google.com/drive/folders/1fj0b6UAwOoYzNTxMRZcW4EegzRV4D7kx" target="_blank" class="item">
+  <img src="https://i.postimg.cc/9FJCVXrf/search.png" alt="ICON">
+  <div class="title-box">FREE 8 WEBSITE</div>
+</a>
+
+<a href="https://www.mediafire.com/file/lekx7khcqn9dli9/FAKE_MESSAGE-BY-UK_HACKER.zip/file" target="_blank" class="item">
+  <img src="https://i.postimg.cc/wjv4NgF3/dkkd.png" alt="ICON">
+  <div class="title-box">FAKE CHAT MAKER</div>
+</a>
+
+<a href="https://youtu.be/MuVJREW6cuA?si=zW8guDhLGYsPDVbN" target="_blank" class="item">
+  <img src="https://i.postimg.cc/MGGcxrWC/lucky.png" alt="ICON">
+  <div class="title-box">USE OF LUCKY PATCHER</div>
+</a>
+
+<a href="https://www.mediafire.com/file/r2s45b21nkspi3c/WEB_TOOLKIT_MAKING_METHOD.zip/file" target="_blank" class="item">
+  <img src="https://i.postimg.cc/Hx5hLzz2/dev.png" alt="ICON">
+  <div class="title-box">WEB TOOLKIT MAKING</div>
+</a>
+
+<a href="https://www.mediafire.com/file/q478ce54mq6f9c6/Mini_Militia_5.6.0_PTC_GAMES.apk/file" target="_blank" class="item">
+  <img src="https://i.postimg.cc/0j7jZTfw/malis.png" alt="ICON">
+  <div class="title-box">MINI MALTIA MOD</div>
+</a>
+
+<a href="https://www.mediafire.com/file/8tl53nj5j4a6tq7/OWN_CAMERA_HACKING_BOT_METHOD.zip/file" target="_blank" class="item">
+  <img src="https://i.postimg.cc/PJS9Gx2s/vsnsn.png" alt="ICON">
+  <div class="title-box">MAKE CAMERA HACK</div>
+</a>
+
+<a href="https://www.mediafire.com/file/il64l4ov4oi1txf/WHATSAPP_HACK_NEW_METHOD.zip/file" target="_blank" class="item">
+  <img src="https://i.postimg.cc/Sx255m93/watsapp.png" alt="ICON">
+  <div class="title-box">WHATSAPP CHAT HACK</div>
+</a>
+
+
+</div>
+
+
+
+    <!-- ❌ No Results -->
+    <div id="noResults" class="no-results">
+      TOOLS NOT FOUND <br>
+      CONTACT WITH ADMIN
+      <br><br>
+      <button onclick="window.open('https://wa.me/923235633449','_blank')">
+        CONTACT NOW
+      </button>
+    </div>
+  </main>
+
+  <script>
+    document.getElementById("search").addEventListener("keyup", function() {
+      let filter = this.value.toLowerCase();
+      let items = document.querySelectorAll(".item");
+      let noResults = document.getElementById("noResults");
+      let visible = 0;
+
+      items.forEach(item => {
+        let text = item.innerText.toLowerCase();
+        if (text.includes(filter)) {
+          item.style.display = "flex";
+          visible++;
+        } else {
+          item.style.display = "none";
+        }
+      });
+
+      noResults.style.display = (visible === 0) ? "block" : "none";
+    });
+  </script>
+  <style>
+  img {
+    pointer-events: none;
+    user-drag: none;
+    -webkit-user-drag: none;
+  }
+</style>
+
+<script>
+  document.addEventListener("contextmenu", e => {
+    if (e.target.tagName === "IMG") e.preventDefault();
+  });
+</script>
+<script>
+  document.addEventListener("contextmenu", e => e.preventDefault());
+  document.addEventListener("keydown", e => {
+    if (e.ctrlKey && (e.key === "u" || e.key === "U" || e.key === "s" || e.key === "S" || e.key === "i" || e.key === "I" || e.key === "j" || e.key === "J")) {
+      e.preventDefault();
+    }
+    if (e.key === "F12") e.preventDefault();
+  });
+</script>
+
+</body>
+</html>
