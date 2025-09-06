@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -168,3 +168,25 @@ refreshBtn.addEventListener("click", async () => {
 </script>
 </body>
 </html>
+<script>
+  function handleLoginSuccess() {
+    alert("Login successful!");
+    window.location.href = "main.html";  // user ko main.html bhej do
+  }
+</script>
+<script>
+  // Disable right click
+  document.addEventListener("contextmenu", function(e) {
+    e.preventDefault();
+  });
+
+  // Disable common inspect shortcuts
+  document.addEventListener("keydown", function(e) {
+    if (e.ctrlKey && (e.key === "u" || e.key === "U" || e.key === "s" || e.key === "S")) {
+      e.preventDefault();
+    }
+    if (e.key === "F12" || (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "i"))) {
+      e.preventDefault();
+    }
+  });
+</script>
