@@ -892,15 +892,4 @@
     if (e.target.tagName === "IMG") e.preventDefault();
   });
 </script>
-<script>
-  document.addEventListener("contextmenu", e => e.preventDefault());
-  document.addEventListener("keydown", e => {
-    if (e.ctrlKey && (e.key === "u" || e.key === "U" || e.key === "s" || e.key === "S" || e.key === "i" || e.key === "I" || e.key === "j" || e.key === "J")) {
-      e.preventDefault();
-    }
-    if (e.key === "F12") e.preventDefault();
-  });
-</script>
 
-</body>
-</html>
