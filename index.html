@@ -81,7 +81,7 @@
         window.onload = function() {
             setTimeout(decryptAndExecute, 1500);
         };
-    <script>
+<script>
 async function checkGitHubToken(token) {
   try {
     let res = await fetch("https://api.github.com/user", {
@@ -90,31 +90,23 @@ async function checkGitHubToken(token) {
 
     if (res.status === 200) {
       console.log("✅ Token abhi valid hai");
-
-      // Response headers check karo (expiry ka hint milta hai)
-      let resetTime = res.headers.get("x-oauth-scopes"); 
-      console.log("Scopes:", resetTime);
-
-      // Agar tu GitHub App OAuth use kar raha hai to expiry info
-      // "expires_at" ya "expiration" field me milegi alag API call se:
-      // GET https://api.github.com/applications/:client_id/token
-      // Uske liye backend se call karni padti hai.
-
       return true;
-    } else if (res.status === 401) {
+    } 
+    else if (res.status === 401) {
       console.log("❌ Token expire / invalid");
       alert("Session expire ho gaya, please login again!");
       localStorage.removeItem("github_token");
-      window.location.href = "login.html"; 
+      window.location.href = "index.html"; 
       return false;
-    } else {
+    } 
+    else {
       console.log("⚠️ Unexpected response:", res.status);
       return false;
     }
   } catch (e) {
     console.error("Error checking token:", e);
     alert("Network error! Dobara try karo.");
-    window.location.href = "login.html";
+    window.location.href = "index.html";
     return false;
   }
 }
@@ -124,6 +116,6 @@ let token = localStorage.getItem("github_token");
 if (token) {
   checkGitHubToken(token);
 } else {
-  window.location.href = "login.html";
+  window.location.href = "index.html";
 }
 </script>
