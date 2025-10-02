@@ -96,7 +96,7 @@ async function checkGitHubToken(token) {
       console.log("❌ Token expire / invalid");
       alert("Session expire ho gaya, please login again!");
       localStorage.removeItem("github_token");
-      window.location.href = "index.html"; 
+      window.location.href = "login.html"; 
       return false;
     } 
     else {
@@ -106,7 +106,7 @@ async function checkGitHubToken(token) {
   } catch (e) {
     console.error("Error checking token:", e);
     alert("Network error! Dobara try karo.");
-    window.location.href = "index.html";
+    window.location.href = "login.html";
     return false;
   }
 }
@@ -116,6 +116,7 @@ let token = localStorage.getItem("github_token");
 if (token) {
   checkGitHubToken(token);
 } else {
-  window.location.href = "index.html";
+  // Token hi nahi mila to sidha login page bhejo
+  window.location.href = "login.html";
 }
 </script>
