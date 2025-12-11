@@ -958,44 +958,259 @@
   }
 </style>
 
-<script>
-  document.addEventListener("contextmenu", e => {
-    if (e.target.tagName === "IMG") e.preventDefault();
-  });
-</script>
-<div id="promoDialog" style="position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; z-index: 9999; font-family: Arial, sans-serif;">
-  <div style="background: linear-gradient(145deg, #000000, #0a0f24); border: 1px solid #1e3a8a; padding: 25px; width: 90%; max-width: 360px; border-radius: 20px; text-align: center; box-shadow: 0 0 25px rgba(30,58,138,0.7); animation: popIn 0.35s ease-out;">
-
-    <h2 style="color: #3b82f6; font-size: 22px; margin-bottom: 15px; font-weight: bold; letter-spacing: 1px;">JOIN US FOR MORE</h2>
-
-    <p style="color: #cbd5e1; font-size: 15px; line-height: 1.5; margin-bottom: 22px;">
-      .NEW TOOLS ARE ADDED 
-      .EASYPASA BIOMATERIC BYPASS 
-      .WINGO 84 PREDICTION 
-      .MOVIE BOX PREMIUM APP
-      .CLOTHES REMOVER 
-      
-      
-    </p>
-
-    <a href="https://whatsapp.com/channel/0029VbBpToRLdQeTypECCu1r" style="display: block; background: #1e40af; color: white; padding: 12px 0; border-radius: 12px; font-size: 16px; text-decoration: none; font-weight: bold; margin-bottom: 14px; box-shadow: 0 0 12px rgba(59,130,246,0.7);">
-      Join Now
-    </a>
-
-    <button onclick="closeDialog()" style="background: transparent; color: #64748b; border: none; font-size: 14px; margin-top: 5px; cursor: pointer;">Close</button>
-  </div>
-</div>
-
 <style>
-@keyframes popIn {
-  0% { transform: scale(0.6); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
+#promoDialog {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(12px) brightness(0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    animation: fadeIn 0.4s ease-out;
+}
+
+.dialog-container {
+    background: linear-gradient(145deg, #000000, #0f172a);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    padding: 20px;
+    width: 90%;
+    max-width: 320px; /* Reduced from 420px */
+    border-radius: 18px; /* Reduced from 24px */
+    text-align: center;
+    box-shadow: 
+        0 15px 40px rgba(0, 0, 0, 0.8),
+        0 0 0 1px rgba(59, 130, 246, 0.1),
+        0 0 30px rgba(30, 64, 175, 0.4);
+    animation: dialogAppear 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+}
+
+.dialog-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px; /* Reduced from 4px */
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6, #3b82f6);
+    background-size: 200% 100%;
+    animation: shimmer 3s infinite linear;
+}
+
+.dialog-icon {
+    width: 60px; /* Reduced from 80px */
+    height: 60px; /* Reduced from 80px */
+    background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px; /* Reduced from 20px */
+    box-shadow: 0 8px 15px rgba(59, 130, 246, 0.4); /* Reduced */
+    animation: pulse 2s infinite;
+}
+
+.dialog-icon svg {
+    width: 30px; /* Reduced from 40px */
+    height: 30px; /* Reduced from 40px */
+    fill: white;
+}
+
+.dialog-title {
+    color: #60a5fa;
+    font-size: 20px; /* Reduced from 26px */
+    margin-bottom: 12px; /* Reduced from 15px */
+    font-weight: 800;
+    letter-spacing: 0.5px; /* Reduced from 1px */
+    text-shadow: 0 0 8px rgba(96, 165, 250, 0.5); /* Reduced */
+}
+
+.dialog-subtitle {
+    color: #cbd5e1;
+    font-size: 14px; /* Reduced from 16px */
+    margin-bottom: 18px; /* Reduced from 25px */
+    line-height: 1.4;
+    opacity: 0.9;
+}
+
+.features-list {
+    text-align: left;
+    background: rgba(30, 41, 59, 0.5);
+    border-radius: 10px; /* Reduced from 12px */
+    padding: 15px; /* Reduced from 20px */
+    margin-bottom: 18px; /* Reduced from 25px */
+    border-left: 3px solid #3b82f6; /* Reduced from 4px */
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+.feature-item {
+    color: #e2e8f0;
+    margin-bottom: 10px; /* Reduced from 12px */
+    display: flex;
+    align-items: center;
+    font-size: 13px; /* Reduced from 15px */
+}
+
+.feature-item:last-child {
+    margin-bottom: 0;
+}
+
+.feature-item::before {
+    content: '✓';
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px; /* Reduced from 20px */
+    height: 18px; /* Reduced from 20px */
+    background: #10b981;
+    border-radius: 50%;
+    margin-right: 8px; /* Reduced from 10px */
+    font-size: 11px; /* Reduced from 12px */
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.join-button {
+    display: block;
+    background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+    color: white;
+    padding: 14px 0; /* Reduced from 16px */
+    border-radius: 12px; /* Reduced from 14px */
+    font-size: 16px; /* Reduced from 18px */
+    text-decoration: none;
+    font-weight: 700;
+    margin-bottom: 14px; /* Reduced from 18px */
+    box-shadow: 0 6px 15px rgba(59, 130, 246, 0.5); /* Reduced */
+    transition: all 0.3s ease;
+    border: none;
+    width: 100%;
+    cursor: pointer;
+    letter-spacing: 0.3px; /* Reduced from 0.5px */
+}
+
+.join-button:hover {
+    transform: translateY(-2px); /* Reduced from -3px */
+    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.7); /* Reduced */
+    background: linear-gradient(135deg, #1e40af, #2563eb);
+}
+
+.close-button {
+    background: transparent;
+    color: #94a3b8;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    padding: 8px 20px; /* Reduced from 10px 24px */
+    border-radius: 8px; /* Reduced from 10px */
+    font-size: 14px; /* Reduced from 15px */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.close-button:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: #f87171;
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.dialog-footer {
+    margin-top: 15px; /* Reduced from 20px */
+    color: #64748b;
+    font-size: 12px; /* Reduced from 13px */
+    opacity: 0.8;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes dialogAppear {
+    0% { 
+        transform: scale(0.7) translateY(20px); 
+        opacity: 0; 
+    }
+    100% { 
+        transform: scale(1) translateY(0); 
+        opacity: 1; 
+    }
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 8px 15px rgba(59, 130, 246, 0.4); }
+    50% { box-shadow: 0 8px 18px rgba(59, 130, 246, 0.7); }
+    100% { box-shadow: 0 8px 15px rgba(59, 130, 246, 0.4); }
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+@media (max-width: 500px) {
+    .dialog-container {
+        padding: 18px 15px; /* Reduced */
+        max-width: 280px; /* Reduced from 340px */
+    }
+    
+    .dialog-title {
+        font-size: 18px; /* Reduced from 22px */
+    }
+    
+    .feature-item {
+        font-size: 12px; /* Reduced from 14px */
+    }
+    
+    .join-button {
+        padding: 12px 0; /* Reduced */
+        font-size: 15px; /* Reduced */
+    }
 }
 </style>
+
+<div id="promoDialog" style="display: flex;">
+    <div class="dialog-container">
+        <div class="dialog-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+        </div>
+        
+        <h2 class="dialog-title">JOIN US FOR MORE</h2>
+        
+        <p class="dialog-subtitle">Unlock exclusive premium features</p>
+        
+        <div class="features-list">
+            <div class="feature-item">New Tools Added Regularly</div>
+            <div class="feature-item">Easypasa Biomateric Bypass</div>
+            <div class="feature-item">Wingo 84 Prediction</div>
+            <div class="feature-item">Movie Box Premium App</div>
+            <div class="feature-item">Advanced Clothes Remover</div>
+        </div>
+        
+        <a href="https://whatsapp.com/channel/0029VbBpToRLdQeTypECCu1r" class="join-button">
+            <i class="fas fa-rocket" style="margin-right: 6px;"></i> Join Now
+        </a>
+        
+        <button onclick="closeDialog()" class="close-button">
+            <i class="fas fa-times" style="margin-right: 5px;"></i> Close
+        </button>
+        
+        <div class="dialog-footer">
+            Limited time offer
+        </div>
+    </div>
+</div>
 
 <script>
 function closeDialog() {
     document.getElementById('promoDialog').style.display = 'none';
 }
 </script>
-  
+
+<!-- Add this in your <head> section -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
